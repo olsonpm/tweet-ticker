@@ -20379,25 +20379,18 @@ var myEase = Power3.easeOut;
 
 $(function() {
     // document is ready
-
     socket.on('twitter-update', function(bdayTweets) {
         var tweetHtml = "";
         bdayTweets.forEach(function(e) {
             var randomColor = colors[Math.floor(Math.random() * 6)];
-            console.log(randomColor);
             //tweetHtml += "<div class='initial tweet' style='background-color: " + randomColor.bg + " !imporant, color: " + randomColor.fg + " !imporant'><h3>" + e.username + "</h3><p>" + e.text + "</p></div>";
             tweetHtml += "<div class='initial tweet' style='background-color: " + randomColor.bg + "; color: " + randomColor.fg + ";'><h3>" + e.username + "</h3><p>" + e.text + "</p></div>";
-            console.log(tweetHtml);
         });
         var oldContent = $('#content').html();
         var curHeight = parseInt($('#content').css('height'), 10);
         $('#content').prepend(tweetHtml);
         var newHeight = parseInt($('#content').css('height'), 10);
         var diffHeight = newHeight - curHeight;
-
-        console.log('curHeight: ' + curHeight);
-        console.log('curHeight: ' + newHeight);
-        console.log('curHeight: ' + diffHeight);
         // reset content
         $('#content').html(oldContent);
 
