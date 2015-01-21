@@ -33,9 +33,9 @@ var attemptTimeout = 30000;
 var streaming = true;
 
 client.stream(
-    'user'
+    'statuses/filter'
     , {
-        replies: "all"
+        track: "mitchsbirfday"
     },
     function(stream) {
         stream.on('data', function(bdayTweet) {
@@ -43,10 +43,10 @@ client.stream(
                 console.log('unexpected tweet');
                 console.log(bdayTweet);
             } else {
-                console.log('successful tweet');
-                console.log(bdayTweet);
+                //~ console.log('successful tweet');
+                //~ console.log(bdayTweet);
                 tweetBuffer.push({
-                    username: bdayTweet.user.name, text: bdayTweet.text
+                    username: bdayTweet.user.screen_name, text: bdayTweet.text
                 });
                 if (tweetBuffer.length > 500) {
                     tweetBuffer = tweetBuffer.slice(0, 100);
