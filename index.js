@@ -9,7 +9,11 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 var Twitter = require('twitter');
-var hbs = require('express-handlebars');
+var hbs = require('express-handlebars').create({
+    helpers: {
+        JSON2string: JSON2string
+    }
+});
 var fs = require('fs');
 
 
@@ -43,9 +47,16 @@ client.stream(
                 console.log('unexpected tweet');
                 console.log(bdayTweet);
             } else {
-                tweetBuffer.push({
-                    username: bdayTweet.user.screen_name, text: bdayTweet.text
-                });
+                var tmpTweet = {
+                    username: bdayTweet.user.screen_name
+                    , text: bdayTweet.text
+                    , created: bdayTweet.created_at
+                };
+                tweetBuffer.push(tmpTweet);
+                last10.unshift(tmpTweet);
+                if (last10.length > 10) {
+                    last10.pop();
+                }
                 if (tweetBuffer.length > 500) {
                     tweetBuffer = tweetBuffer.slice(0, 100);
                 }
@@ -75,14 +86,25 @@ client.stream(
         });
     });
 
-app.engine('handlebars', hbs());
+/*
+ * Simple helper to stringify an object.
+ * Usage: {{ JSON2string object }}
+ */
+function JSON2string(obj) {
+    return decodeURIComponent(JSON.stringify(obj));
+};
+
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 app.use(express.static(__dirname + '/static'));
 
 app.get('/', function(req, res) {
+
     res.render("home", {
-        tryme: "this worked"
+        last10tweets: (last10.length > 0)
+            ? last10
+            : null
     });
 });
 

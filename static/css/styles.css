@@ -1,6 +1,11 @@
 html, body {
 	background-color: white;
 	background-image: url('/img/bg.png');
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+#lastTen {
+	display: none;
 }
 
 #ribbon {
@@ -21,7 +26,6 @@ h1 {
 p {
 	color: #333;
 	text-align: center;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: 26px;	
 }
 
@@ -33,7 +37,7 @@ p.initial.explanation {
 	position: relative;
 	width: 600px;
 	margin: 0 auto;
-	padding: 10px 30px 20px;
+	padding: 10px 30px 6px;
 	color: #333;
 }
 
@@ -52,7 +56,11 @@ p.initial.explanation {
 	font-size: 30px;
 	content: "@";
 }
-
+.tweet > .timestamp {
+	text-align: right;
+	font-size: 16px;
+	color: #999;
+}
 
 /*--------*/
 /* RIBBON */

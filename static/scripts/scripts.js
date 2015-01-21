@@ -3,9 +3,10 @@
 
 var io = require('socket.io-client');
 var socket = io();
-var $ = require('jquery');
 var TweenLite = require('TweenLite');
 require('gsapCssPlugin');
+var moment = require('moment');
+var $ = require('./jqueryPluginsList');
 
 var colors = [{
     bg: "#7EFF9D"
@@ -31,44 +32,47 @@ $(function() {
     var ready = false;
     setTimeout(function() {
         ready = true;
+        var json = $('#lastTen').data('json');
+        if (json !== null) {
+            checkInitialThenDisplay(json);
+        }
     }, readyTimeout);
     socket.on('twitter-update', function(bdayTweets) {
         if (ready) {
-            if ($('p.initial.explanation').length) {
-                TweenLite.fromTo($('p.initial.explanation'), duration, {
-                    opacity: 1
-                }, {
-                    ease: myEase
-                    , css: {
-                        opacity: 0
-                    }
-                    , onComplete: function() {
-                        console.log('bdayTweets');
-                        console.log(bdayTweets);
-                        console.log('storedTweets');
-                        console.log(storedTweets);
-                        $('p.initial.explanation').remove();
-                        bdayTweets = bdayTweets.concat(storedTweets);
-                        displayTweets(bdayTweets);
-                        storedTweets = [];
-                    }
-                });
-            } else {
-                displayTweets(bdayTweets);
-            }
+            checkInitialThenDisplay(bdayTweets);
         } else {
             storedTweets.push(bdayTweets);
         }
     });
 });
 
+function checkInitialThenDisplay(tweets) {
+    if ($('p.initial.explanation').length) {
+        TweenLite.fromTo($('p.initial.explanation'), duration, {
+            opacity: 1
+        }, {
+            ease: myEase
+            , css: {
+                opacity: 0
+            }
+            , onComplete: function() {
+                $('p.initial.explanation').remove();
+                tweets = tweets.concat(storedTweets);
+                displayTweets(tweets);
+                storedTweets = [];
+            }
+        });
+    } else {
+        displayTweets(tweets);
+    }
+}
 
 function displayTweets(tweets) {
     var tweetHtml = "";
     tweets.forEach(function(e) {
         var randomColor = colors[Math.floor(Math.random() * 6)];
         tweetHtml += "<div class='initial tweet' style='border-top: 3px solid " + randomColor.bg + "; "
-            + "border-bottom: 3px solid " + randomColor.bg + ";'><h3>" + e.username + "</h3><p>" + e.text + "</p></div>";
+            + "border-bottom: 3px solid " + randomColor.bg + ";'><h3>" + e.username + "</h3><p>" + e.text + "</p><div class='timestamp'>Curated " + moment(e.created).format('lll') + "</div></div>";
     });
     var oldContent = $('#content').html();
     var curHeight = parseInt($('#content').css('height'), 10);
