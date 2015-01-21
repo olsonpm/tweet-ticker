@@ -1,0 +1,35 @@
+html, body {
+	background-color: white !important;
+	background-image: url('/img/bg.png');
+}
+
+h1 {
+	color: #333 !important;
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+.tweet {
+	position: relative !important;
+	width: 600px;
+	margin: 0 auto;
+	padding: 10px 30px 20px;
+}
+
+.tweet.initial {
+	opacity: 0 !important;
+}
+
+.tweet > h3{
+	font-size: 30px !important;
+	font-weight: bold !important;
+}
+.tweet > h3::before {
+	font-weight: bold !important;
+	font-size: 30px !important;
+	content: "@";
+}
+
+.tweet > p{
+	font-size: 26px !important;
+}
