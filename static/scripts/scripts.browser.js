@@ -23427,6 +23427,7 @@ var colors = [{
 var duration = 0.4;
 var myEase = Power3.easeOut;
 var readyTimeout = 1000;
+var initialReadyTimeout = 6000;
 var newTrackTimeout = 200;
 var ready = false;
 
@@ -23444,7 +23445,9 @@ $(function() {
 
     var curTrack = $('#curtrack').data('curtrack');
     if (curTrack) {
-        ready = true;
+        setTimeout(function() {
+            ready = true;
+        }, initialReadyTimeout);
     }
     $('#track').click(track);
 });
@@ -23498,6 +23501,8 @@ function track() {
             track: stringToTrack
         }
     });
+
+    return false;
 }
 
 function checkInitialThenDisplay(tweets) {

@@ -50,17 +50,17 @@ p {
 label {
 	display: inline-block;
 }
-input[type="button"] {
+input[type="submit"] {
 	text-align: center;
 	padding: 6px 12px;
 	cursor: pointer;
 	margin: 18px auto 0;
 	display: block;
 }
-input[type="button"]:hover {
+input[type="submit"]:hover {
 	background-color: #D3DCFF;
 }
-input[type="button"]:disabled {
+input[type="submit"]:disabled {
 	background-color: #D8D8D8;
 	cursor: default;
 }

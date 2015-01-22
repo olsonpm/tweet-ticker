@@ -38,7 +38,7 @@ var tweetBuffer = [];
 var sendTweets = [];
 var attemptStream = true;
 var curStream = null;
-var pushIterationMs = 6000;
+var pushIterationMs = 8000;
 var maxTweetsSent = 2;
 var currentTrack = '';
 

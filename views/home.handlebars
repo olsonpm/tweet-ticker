@@ -17,19 +17,21 @@
 		<img id="ribbon" src="/img/header.png" alt="Mitch's birf day tweets"></img>
 		
 		<div id="content">
-			<label>
-				You can track whatever you liiiike:
-				{{#if curTrack}}
-				<input id="text-to-track" type="text" value="{{curTrack}}" maxlength="10">
-				{{else}}
-				<input id="text-to-track" type="text" value="nasa" maxlength="10">
-				{{/if}}
-			</label>
-			<input id="track" type="button" value="Track">
-			<p class="description">
-				Note: This website only tracks one subject at a time.  Meaning if you choose to track turtles, now everyone visiting this 
-				website gets to see all twitter turtle goodness.  Don't worry though, it's fun that way.
-			</p>
+			<form>
+				<label>
+					You can track whatever you liiiike:
+					{{#if curTrack}}
+					<input id="text-to-track" type="text" value="{{curTrack}}" maxlength="10">
+					{{else}}
+					<input id="text-to-track" type="text" value="nasa" maxlength="10">
+					{{/if}}
+				</label>
+				<input id="track" type="submit" value="Track">
+				<p class="description">
+					Note: This website only tracks one subject at a time.  Meaning if you choose to track turtles, now everyone visiting this 
+					website gets to see all twitter turtle goodness.  Don't worry though, it's fun that way.
+				</p>
+			</form>
 			<div id="tweets">
 				<p class="initial explanation">
 					{{#if curTrack}}

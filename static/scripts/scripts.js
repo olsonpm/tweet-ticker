@@ -99,6 +99,8 @@ function track() {
             track: stringToTrack
         }
     });
+
+    return false;
 }
 
 function checkInitialThenDisplay(tweets) {
