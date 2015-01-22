@@ -38,5 +38,8 @@
     "TweenLite": "./node_modules/gsap/src/uncompressed/TweenLite.js",
     "gsapCssPlugin": "./node_modules/gsap/src/uncompressed/plugins/CSSPlugin.js",
     "perfect-tooltip": "./node_modules/perfect-tooltip/js/jquery.tooltip.js"
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }
