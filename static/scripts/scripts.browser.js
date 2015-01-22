@@ -22515,7 +22515,7 @@ function isBuf(obj) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],51:[function(require,module,exports){
 module.exports=require(44)
-},{"/home/phil/misc-git-repos/my-repos/mitchsbirfday/node_modules/socket.io-client/node_modules/has-binary/node_modules/isarray/index.js":44}],52:[function(require,module,exports){
+},{"/home/phil/misc-git-repos/my-repos/tweet-ticker/node_modules/socket.io-client/node_modules/has-binary/node_modules/isarray/index.js":44}],52:[function(require,module,exports){
 /*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
 ;(function (window) {
   // Convenience aliases.
@@ -23426,27 +23426,79 @@ var colors = [{
 
 var duration = 0.4;
 var myEase = Power3.easeOut;
-var readyTimeout = 8000;
-var storedTweets = [];
+var readyTimeout = 1000;
+var newTrackTimeout = 200;
+var ready = false;
 
 $(function() {
     // document is ready
-    var ready = false;
-    setTimeout(function() {
-        ready = true;
-        var json = $('#lastTen').data('json');
-        if (json !== null) {
-            checkInitialThenDisplay(json);
-        }
-    }, readyTimeout);
-    socket.on('twitter-update', function(bdayTweets) {
+    socket.on('twitter-update', function(theTweets) {
         if (ready) {
-            checkInitialThenDisplay(bdayTweets);
-        } else {
-            storedTweets.push(bdayTweets);
+            checkInitialThenDisplay(theTweets);
         }
     });
+    socket.on('track-change', function(newTrack) {
+        console.log('track changed: ' + newTrack);
+        changeTrack(newTrack);
+    });
+
+    var curTrack = $('#curtrack').data('curtrack');
+    if (curTrack) {
+        ready = true;
+    }
+    $('#track').click(track);
 });
+
+function changeTrack(newTrack) {
+    var oldTextToTrack = $('#text-to-track').val();
+    $('#text-to-track').val(newTrack);
+    $('#track').prop('disabled', true);
+    var curHeight = $('#tweets').css('height');
+    TweenLite.to($('#tweets'), duration, {
+        ease: myEase
+        , css: {
+            opacity: 0
+        }
+        , onComplete: function() {
+            setTimeout(function() {
+                if (oldTextToTrack === newTrack) {
+                    $('#tweets').html('<p class="initial explanation">Now tracking ' + $('#text-to-track').val() + '</p>');
+                } else {
+                    $('#tweets').html('<p class="initial explanation">Someone decided everyone should now track ' + $('#text-to-track').val() + '</p>');
+                }
+
+                TweenLite.to($('#tweets'), duration, {
+                    ease: myEase
+                    , css: {
+                        opacity: 1
+                    }
+                    , onComplete: function() {
+                        setTimeout(function() {
+                            ready = true;
+                            $('#track').prop('disabled', false);
+                        }, readyTimeout);
+                    }
+                });
+            }, newTrackTimeout);
+        }
+    });
+}
+
+function track() {
+    if ($('#track:disabled').length) {
+        return;
+    }
+    ready = false;
+    $('#track').prop('disabled', true);
+    var stringToTrack = $('#text-to-track').val();
+    $.ajax({
+        url: "/track"
+        , type: "POST"
+        , data: {
+            track: stringToTrack
+        }
+    });
+}
 
 function checkInitialThenDisplay(tweets) {
     if ($('p.initial.explanation').length) {
@@ -23459,9 +23511,7 @@ function checkInitialThenDisplay(tweets) {
             }
             , onComplete: function() {
                 $('p.initial.explanation').remove();
-                tweets = tweets.concat(storedTweets);
                 displayTweets(tweets);
-                storedTweets = [];
             }
         });
     } else {
@@ -23476,22 +23526,22 @@ function displayTweets(tweets) {
         tweetHtml += "<div class='initial tweet' style='border-top: 3px solid " + randomColor.bg + "; "
             + "border-bottom: 3px solid " + randomColor.bg + ";'><h3>" + e.username + "</h3><p>" + e.text + "</p><div class='timestamp'>Curated " + moment(e.created).format('lll') + "</div></div>";
     });
-    var oldContent = $('#content').html();
-    var curHeight = parseInt($('#content').css('height'), 10);
-    $('#content').prepend(tweetHtml);
-    var newHeight = parseInt($('#content').css('height'), 10);
+    var oldContent = $('#tweets').html();
+    var curHeight = parseInt($('#tweets').css('height'), 10);
+    $('#tweets').prepend(tweetHtml);
+    var newHeight = parseInt($('#tweets').css('height'), 10);
     var diffHeight = newHeight - curHeight;
     // reset content
-    $('#content').html(oldContent);
+    $('#tweets').html(oldContent);
 
     // now animate
-    TweenLite.to($('.tweet'), duration, {
+    TweenLite.to($('.tweet'), ((3.5 * tweets.length) / (4 + tweets.length)), {
         ease: myEase
         , css: {
             top: diffHeight
         }
         , onComplete: function() {
-            $('#content').prepend(tweetHtml);
+            $('#tweets').prepend(tweetHtml);
             $('.tweet').css('top', '');
             TweenLite.fromTo($('.tweet.initial'), duration, {
                 opacity: 0

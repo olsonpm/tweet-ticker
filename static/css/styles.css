@@ -13,6 +13,11 @@ html, body {
 	margin: 40px auto;
 }
 
+#tweets {
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+
 h1 {
 	color: #333;
 	text-align: center;
@@ -20,17 +25,55 @@ h1 {
 }
 
 #content {
+	text-align: center;
 	margin-top: 60px;
 }
 
-p {
+p, label, input {
 	color: #333;
-	text-align: center;
 	font-size: 26px;	
 }
 
-p.initial.explanation {
-	font-size: 36px;
+p.description {
+	padding-top: 14px;
+	padding-left: 60px;
+	padding-right: 60px;
+	max-width: 600px;
+	font-size: 20px;
+	display: inline-block;
+	text-align: center;
+}
+
+p {
+	text-align: center;
+}
+label {
+	display: inline-block;
+}
+input[type="button"] {
+	text-align: center;
+	padding: 6px 12px;
+	cursor: pointer;
+	margin: 18px auto 0;
+	display: block;
+}
+input[type="button"]:hover {
+	background-color: #D3DCFF;
+}
+input[type="button"]:disabled {
+	background-color: #D8D8D8;
+	cursor: default;
+}
+input[type="text"] {
+	text-align: left;
+	padding-left:8px;
+	width: 240px;
+	margin-left: 8px;
+}
+input {
+	border-radius: 4px;
+	background-color: white;
+	border: 1px solid #333;
 }
 
 .tweet {
@@ -46,6 +89,7 @@ p.initial.explanation {
 }
 
 .tweet > h3{
+	text-align: left;
 	font-family: bitter,serif;
 	font-size: 30px;
 	font-weight: bold;
@@ -61,91 +105,3 @@ p.initial.explanation {
 	font-size: 16px;
 	color: #999;
 }
-
-/*--------*/
-/* RIBBON */
-/*--------*/
-
-.ribbon {
-	font-weight: bold;
-   width: 600px;
-   position: absolute;
-   text-align: center;
-   font-size: 24px!important;
-   background: #d64b4b;
-   background: -webkit-gradient(linear, left top, left bottom, from(#d64b4b), to(#ab2c2c));
-   background: -webkit-linear-gradient(top, #d64b4b, #ab2c2c);
-   background: -moz-linear-gradient(top, #d64b4b, #ab2c2c);
-   background: -ms-linear-gradient(top, #d64b4b, #ab2c2c);
-   background: -o-linear-gradient(top, #d64b4b, #ab2c2c);
-   background-image: -ms-linear-gradient(top, #d64b4b 0%, #ab2c2c 100%);
-   -webkit-box-shadow: rgba(000,000,000,0.3) 0 1px 1px;
-   -moz-box-shadow: rgba(000,000,000,0.3) 0 1px 1px;
-   box-shadow: rgba(000,000,000,0.3) 0 1px 1px;
-   font-family: bitter,serif;
-   }
-.ribbon h1 {
-   font-size: 49px;
-   color: #751616;
-   text-shadow: #d65c5c 0 1px 0;
-   margin:0px;
-   padding: 15px 10px;
-   }
-.ribbon:before, .ribbon:after {
-   content: '';
-   position: absolute;
-   display: block;
-   bottom: -1em;
-   border: 1.5em solid #c23a3a;
-   z-index: -1;
-   }
-.ribbon:before {
-   left: -2em;
-   border-right-width: 1.5em;
-   border-left-color: transparent;
-   -webkit-box-shadow: rgba(000,000,000,0.4) 1px 1px 1px;
-   -moz-box-shadow: rgba(000,000,000,0.4) 1px 1px 1px;
-   box-shadow: rgba(000,000,000,0.4) 1px 1px 1px;
-   }
-.ribbon:after {
-   right: -2em;
-   border-left-width: 1.5em;
-   border-right-color: transparent;
-   -webkit-box-shadow: rgba(000,000,000,0.4) -1px 1px 1px;
-   -moz-box-shadow: rgba(000,000,000,0.4) -1px 1px 1px;
-   box-shadow: rgba(000,000,000,0.4) -1px 1px 1px;
-   }
-.ribbon .ribbon-content:before, .ribbon .ribbon-content:after {
-   border-color: #871616 transparent transparent transparent;
-   position: absolute;
-   display: block;
-   border-style: solid;
-   bottom: -1em;
-   content: '';
-   }
-.ribbon .ribbon-content:before {
-   left: 0;
-   border-width: 1em 0 0 1em;
-   }
-.ribbon .ribbon-content:after {
-   right: 0;
-   border-width: 1em 1em 0 0;
-   }
-.ribbon-stitches-top {
-   margin-top:2px;
-   border-top: 1px dashed rgba(0, 0, 0, 0.2);
-   -moz-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
-   -webkit-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
-   box-shadow: 0px 0px 2px rgba(255, 255, 255, 0.5);
-   }
-.ribbon-stitches-bottom {
-   margin-bottom:2px;
-   border-top: 1px dashed rgba(0, 0, 0, 0.2);
-   -moz-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3);
-   -webkit-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3);
-   box-shadow: 0px 0px 2px rgba(255, 255, 255, 0.3);
-   }
-   
-/*------------*/
-/* END RIBBON */
-/*------------*/

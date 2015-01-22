@@ -5,5 +5,5 @@ geanyy "\
  ${DIR}/views/home_dev.handlebars \
  ${DIR}/views/home.handlebars \
  ${DIR}/static/scripts/scripts.js \
- ${DIR}/static/styles/styles.css \
+ ${DIR}/static/css/styles.css \
  "

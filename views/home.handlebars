@@ -2,9 +2,14 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>It's mitch's birf day</title>
+		<title>Track what you will</title>
 		<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Bitter:400,700">
+		
+		{{#if isDev}}
+		<link rel="stylesheet" type="text/css" href="/css/styles.css">
+		{{else}}
 		<link rel="stylesheet" type="text/css" href="/css/styles.min.css">
+		{{/if}}
 	</head>
 
 	<body class="jumbotron">
@@ -12,13 +17,36 @@
 		<img id="ribbon" src="/img/header.png" alt="Mitch's birf day tweets"></img>
 		
 		<div id="content">
-			<p class="initial explanation">
-				A live feed of all things #mitchsbirfday
+			<label>
+				You can track whatever you liiiike:
+				{{#if curTrack}}
+				<input id="text-to-track" type="text" value="{{curTrack}}" maxlength="10">
+				{{else}}
+				<input id="text-to-track" type="text" value="nasa" maxlength="10">
+				{{/if}}
+			</label>
+			<input id="track" type="button" value="Track">
+			<p class="description">
+				Note: This website only tracks one subject at a time.  Meaning if you choose to track turtles, now everyone visiting this 
+				website gets to see all twitter turtle goodness.  Don't worry though, it's fun that way.
 			</p>
+			<div id="tweets">
+				<p class="initial explanation">
+					{{#if curTrack}}
+					Currently tracking {{curTrack}}
+					{{else}}
+					Not tracking anything
+					{{/if}}
+				</p>
+			</div>
 		</div>
-		
-		<div id="lastTen" data-json="{{JSON2string last10tweets}}"></div>
+
+		<div id="curtrack" data-curtrack="{{curTrack}}"></div>
+		{{#if isDev}}
+		<script src="/scripts/scripts.browser.js"></script>
+		{{else}}
 		<script src="/scripts/scripts.browser.min.js"></script>
+		{{/if}}
 	</body>
 
 </html>

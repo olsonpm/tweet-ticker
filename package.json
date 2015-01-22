@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.dev.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.dev.js",
+    "start": "node index.js prod",
+    "dev": "node index.js dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/olsonpm/mitchsbirfday",
   "dependencies": {
+    "body-parser": "^1.10.2",
     "express": "^4.11.0",
     "express-handlebars": "^1.1.0",
     "socket.io": "^1.3.2",
