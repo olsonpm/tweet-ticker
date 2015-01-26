@@ -30,7 +30,8 @@ var newTrackTimeout = 200;
 var ready = false;
 
 $(function() {
-    // document is ready
+    $('p.description').buddySystem();
+
     socket.on('twitter-update', function(theTweets) {
         if (ready) {
             checkInitialThenDisplay(theTweets);
@@ -156,6 +157,7 @@ function displayTweets(tweets) {
                 , onComplete: function() {
                     $('.tweet').removeClass('initial');
                     $('.tweet').css('opacity', '');
+                    $('.tweet p').buddySystem();
                 }
             });
         }
