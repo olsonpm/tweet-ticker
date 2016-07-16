@@ -5,10 +5,11 @@
 // Imports //
 //---------//
 
-var express = require('express')
+const express = require('express')
   , app = express()
   , server = require('http').Server(app)
   , io = require('socket.io').listen(server)
+  , fp = require('lodash/fp')
   , minimist = require('minimist')
   , Twitter = require('twitter')
   , hbs = require('express-handlebars').create({
@@ -24,20 +25,29 @@ var express = require('express')
 // Init //
 //------//
 
-var client = new Twitter({
-  consumer_key: process.env.TWITTER_PHIL_CONSUMER_KEY
-  , consumer_secret: process.env.TWITTER_PHIL_CONSUMER_SECRET
-  , access_token_key: process.env.TWITTER_PHIL_ACCESS_TOKEN
-  , access_token_secret: process.env.TWITTER_PHIL_ACESSS_SECRET
-});
+const get = fp.curry((obj, path) => fp.get(path, obj));
 
-var argv = minimist(process.argv.slice(2))
-  , currentTrack = ''
-  , curStream = null
+const twitterEnvs = {
+    consumer_key: 'TWITTER_PHIL_CONSUMER_KEY'
+    , consumer_secret: 'TWITTER_PHIL_CONSUMER_SECRET'
+    , access_token_key: 'TWITTER_PHIL_ACCESS_TOKEN'
+    , access_token_secret: 'TWITTER_PHIL_ACCESS_SECRET'
+  }
+  , twitterConfig = fp.mapValues(get(process.env), twitterEnvs)
+  ;
+
+
+const argv = minimist(process.argv.slice(2))
+  , client = new Twitter()
   , environment = argv.env || 'dev'
   , maxTweetsSent = 2
   , port = argv.port || 5000
+  , prepend = getPrepend()
   , pushIterationMs = 8000
+  ;
+
+let currentTrack = ''
+  , curStream = null
   , sendTweets = []
   , timerSend = true
   , tweetBuffer = []
@@ -45,6 +55,17 @@ var argv = minimist(process.argv.slice(2))
 
 if (['dev', 'test', 'prod'].indexOf(environment) === -1) {
   throw new Error("command-line environment '" + environment + "' wasn't the expected dev/test/or prod");
+}
+
+const missingEnvironmentVars = fp.pickBy(fp.isUndefined, twitterConfig);
+if (fp.size(missingEnvironmentVars)) {
+  const errMsg = fp.flow(
+    fp.keys
+    , fp.map(get(twitterEnvs))
+    , fp.map(prepend('\n  '))
+    , fp.join('')
+  )(missingEnvironmentVars);
+  throw new Error('The following environment variables must exist' + errMsg);
 }
 
 
@@ -138,3 +159,14 @@ app.post('/track', function(req, res) {
 server.listen(port, function() {
   console.log("Server listening on port: " + port);
 });
+
+
+//-------------//
+// Helper Fxns //
+//-------------//
+
+function getPrepend() {
+  return fp.curry(
+    (str, val) => str + fp.toString(val)
+  );
+}
