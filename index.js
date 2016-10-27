@@ -5,19 +5,16 @@
 // Imports //
 //---------//
 
-const express = require('express')
-  , app = express()
-  , server = require('http').Server(app)
-  , io = require('socket.io').listen(server)
+const bodyParser = require('body-parser')
+  , compression = require('compression')
+  , express = require('express')
   , fp = require('lodash/fp')
+  , hbs = require('express-hbs')
+  , socketIo = require('socket.io')
   , minimist = require('minimist')
+  , path = require('path')
+  , http = require('http')
   , Twitter = require('twitter')
-  , hbs = require('express-handlebars').create({
-      helpers: {
-        JSON2string: JSON2string
-      }
-    })
-  , bodyParser = require('body-parser')
   ;
 
 
@@ -25,7 +22,13 @@ const express = require('express')
 // Init //
 //------//
 
-const get = fp.curry((obj, path) => fp.get(path, obj));
+
+const app = express()
+  , get = fp.curry((obj, path) => fp.get(path, obj))
+  , server = http.Server(app)
+  ;
+
+const io = socketIo.listen(server);
 
 const twitterEnvs = {
     consumer_key: 'TWITTER_PHIL_CONSUMER_KEY'
@@ -36,12 +39,10 @@ const twitterEnvs = {
   , twitterConfig = fp.mapValues(get(process.env), twitterEnvs)
   ;
 
-
 const argv = minimist(process.argv.slice(2))
-  , client = new Twitter()
+  , client = new Twitter(twitterConfig)
   , environment = argv.env || 'dev'
   , maxTweetsSent = 2
-  , port = argv.port || 5000
   , prepend = getPrepend()
   , pushIterationMs = 8000
   ;
@@ -88,77 +89,77 @@ function stream(trackText) {
     },
     function(stream) {
       curStream = stream;
-      stream.on('data', function(bdayTweet) {
-        if (!bdayTweet.user || !bdayTweet.text) {
+      stream.on('data', aTweet => {
+        if (!aTweet.user || !aTweet.text) {
+          // not sure what this limit tweet is, but we don't care about them
+          if (aTweet.limit) return;
+
           console.log('unexpected tweet');
-          console.log(bdayTweet);
-        } else {
-          var tmpTweet = {
-            username: bdayTweet.user.screen_name
-            , text: bdayTweet.text
-            , created: bdayTweet.created_at
-          };
-          tweetBuffer.push(tmpTweet);
-          if (tweetBuffer.length > 500) {
-            tweetBuffer = tweetBuffer.slice(0, 100);
-          }
-          if (timerSend) {
-            if (tweetBuffer.length > maxTweetsSent) {
-              sendTweets = tweetBuffer.slice(0, maxTweetsSent);
-              tweetBuffer = tweetBuffer.slice(maxTweetsSent);
-            } else {
-              sendTweets = tweetBuffer;
-              tweetBuffer = [];
-            }
-            io.emit('twitter-update', sendTweets);
-            timerSend = false;
-            setTimeout(function() {
-              timerSend = true;
-            }, pushIterationMs);
-          }
+          console.log(aTweet);
+          return;
         }
+
+        tweetBuffer.push({
+          username: aTweet.user.screen_name
+          , text: aTweet.text
+          , created: aTweet.created_at
+        });
+
+        if (tweetBuffer.length > 500) {
+          tweetBuffer = tweetBuffer.slice(0, 100);
+        }
+
+        // timerSend is a throttle
+        if (!timerSend) return;
+
+        if (tweetBuffer.length > maxTweetsSent) {
+          sendTweets = tweetBuffer.slice(0, maxTweetsSent);
+          tweetBuffer = tweetBuffer.slice(maxTweetsSent);
+        } else {
+          sendTweets = tweetBuffer;
+          tweetBuffer = [];
+        }
+        io.emit('twitter-update', sendTweets);
+        timerSend = false;
+        setTimeout(
+          () => { timerSend = true; }
+          , pushIterationMs
+        );
       });
-      stream.on('error', function(err) {
+      stream.on('error', err => {
         console.error('error');
         console.error(err);
       });
-      stream.on('end', function() {
+      stream.on('end', () => {
         console.log('stream ended');
       });
     });
 }
 
-/*
- * Simple helper to stringify an object.
- * Usage: {{ JSON2string object }}
- */
-function JSON2string(obj) {
-  return decodeURIComponent(JSON.stringify(obj));
-}
+app.engine('hbs', hbs.express4({ partials: 'views/partials' }))
+  .set('view engine', 'hbs')
+  .set('views', path.join(__dirname, '/views'))
 
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
+  .use(compression())
+  .use(express.static(__dirname + '/static'))
+  .use(bodyParser.urlencoded({
+    extended: true
+  }))
+  .use(bodyParser.json())
 
-app.use(express.static(__dirname + '/static'));
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(bodyParser.json());
+  .get('/', (req, res) => {
+    res.render("home", {
+      isDev: (environment === 'dev')
+      , curTrack: currentTrack
+    });
+  })
 
-app.get('/', function(req, res) {
-  res.render("home", {
-    isDev: (environment === 'dev')
-    , curTrack: currentTrack
+  .post('/track', (req, res) => {
+    stream(req.body.track);
+    res.sendStatus(200);
   });
-});
-app.post('/track', function(req, res) {
-  stream(req.body.track);
-  res.sendStatus(200);
-});
 
-server.listen(port, function() {
-  console.log("Server listening on port: " + port);
-});
+const getRequestListener = () => app.callback();
 
 
 //-------------//
@@ -170,3 +171,10 @@ function getPrepend() {
     (str, val) => str + fp.toString(val)
   );
 }
+
+
+//---------//
+// Exports //
+//---------//
+
+module.exports = { getRequestListener };

@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<title>Track what you will</title>
 		<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Bitter:400,700">
-		
+
 		{{#if isDev}}
 		<link rel="stylesheet" type="text/css" href="/css/styles.css">
 		{{else}}
@@ -13,9 +13,9 @@
 	</head>
 
 	<body class="jumbotron">
-		
-		<img id="ribbon" src="/img/header.png" alt="Mitch's birf day tweets"></img>
-		
+
+		<img id="ribbon" src="/img/header.png" alt="Twitter Feed Tester"></img>
+
 		<div id="content">
 			<form>
 				<label>
@@ -28,7 +28,7 @@
 				</label>
 				<input id="track" type="submit" value="Track">
 				<p class="description">
-					Note: This website only tracks one subject at a time.  Meaning if you choose to track turtles, now everyone visiting this 
+					Note: This website only tracks one subject at a time.  Meaning if you choose to track turtles, now everyone visiting this
 					website gets to see all twitter turtle goodness.  Don't worry though, it's fun that way.
 				</p>
 			</form>
@@ -44,11 +44,7 @@
 		</div>
 
 		<div id="curtrack" data-curtrack="{{curTrack}}"></div>
-		{{#if isDev}}
-		<script src="/scripts/scripts.browser.js"></script>
-		{{else}}
-		<script src="/scripts/scripts.browser.min.js"></script>
-		{{/if}}
+		<script src="/scripts/index.pack.min.js"></script>
 	</body>
 
 </html>
