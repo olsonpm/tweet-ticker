@@ -101,7 +101,7 @@ const getRequestListener = letsencryptDir => {
       res.sendStatus(200);
     });
 
-  return app.callback();
+  return app;
 };
 
 
