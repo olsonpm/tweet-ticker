@@ -14,10 +14,6 @@ const stringSrc = '`'
 module.exports = src => {
   return src.replace(
     "read(require.resolve('socket.io-client/socket.io.js'), 'utf-8')"
-    , "read('" + require.resolve('socket.io-client/socket.io.js') + "', 'utf-8')"
+    , () => stringSrc
   );
-  // return src.replace(
-  //   "read(require.resolve('socket.io-client/socket.io.js'), 'utf-8')"
-  //   , () => stringSrc
-  // );
 };
