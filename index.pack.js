@@ -144,6 +144,41 @@ module.exports =
 	// Main //
 	//------//
 
+
+	const getRequestListener = letsencryptDir => {
+	  if (letsencryptDir) app.use(express.static(letsencryptDir));
+
+	  app.engine('hbs', hbs.express4({ partials: 'views/partials' }))
+	    .set('view engine', 'hbs')
+	    .set('views', path.join(__dirname, '/views'))
+
+	    .use(compression())
+	    .use(express.static(__dirname + '/static'))
+	    .use(bodyParser.urlencoded({
+	      extended: true
+	    }))
+	    .use(bodyParser.json())
+
+	    .get('/', (req, res) => {
+	      res.render("home", {
+	        isDev: (environment === 'dev')
+	        , curTrack: currentTrack
+	      });
+	    })
+
+	    .post('/track', (req, res) => {
+	      stream(req.body.track);
+	      res.sendStatus(200);
+	    });
+
+	  return app.callback();
+	};
+
+
+	//-------------//
+	// Helper Fxns //
+	//-------------//
+
 	function stream(trackText) {
 	  if (curStream !== null) {
 	    curStream.destroy();
@@ -205,36 +240,6 @@ module.exports =
 	      });
 	    });
 	}
-
-	app.engine('hbs', hbs.express4({ partials: 'views/partials' }))
-	  .set('view engine', 'hbs')
-	  .set('views', path.join(__dirname, '/views'))
-
-	  .use(compression())
-	  .use(express.static(__dirname + '/static'))
-	  .use(bodyParser.urlencoded({
-	    extended: true
-	  }))
-	  .use(bodyParser.json())
-
-	  .get('/', (req, res) => {
-	    res.render("home", {
-	      isDev: (environment === 'dev')
-	      , curTrack: currentTrack
-	    });
-	  })
-
-	  .post('/track', (req, res) => {
-	    stream(req.body.track);
-	    res.sendStatus(200);
-	  });
-
-	const getRequestListener = () => app.callback();
-
-
-	//-------------//
-	// Helper Fxns //
-	//-------------//
 
 	function getPrepend() {
 	  return fp.curry(
