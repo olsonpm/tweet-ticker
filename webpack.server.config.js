@@ -16,7 +16,7 @@ module.exports = {
     loaders: [
       {
         test: /socket\.io\/lib\/index\.js$/
-        , loader: path.join(__dirname, 'require-resolve-loader.js')
+        , loader: path.join(__dirname, 'read-static-source-loader.js')
       },
       {
         test: /\.json$/
