@@ -13,7 +13,6 @@ const bodyParser = require('body-parser')
   , socketIo = require('socket.io')
   , minimist = require('minimist')
   , path = require('path')
-  , http = require('http')
   , Twitter = require('twitter')
   ;
 
@@ -25,10 +24,7 @@ const bodyParser = require('body-parser')
 
 const app = express()
   , get = fp.curry((obj, path) => fp.get(path, obj))
-  , server = http.Server(app)
   ;
-
-const io = socketIo.listen(server);
 
 const twitterEnvs = {
     consumer_key: 'TWITTER_PHIL_CONSUMER_KEY'
@@ -49,6 +45,7 @@ const argv = minimist(process.argv.slice(2))
 
 let currentTrack = ''
   , curStream = null
+  , io
   , sendTweets = []
   , timerSend = true
   , tweetBuffer = []
@@ -75,7 +72,9 @@ if (fp.size(missingEnvironmentVars)) {
 //------//
 
 
-const getRequestListener = letsencryptDir => {
+const getRequestListener = (letsencryptDir, server, ioNamespace) => {
+  io = socketIo(server).of(ioNamespace);
+
   if (letsencryptDir) app.use(express.static(letsencryptDir));
 
   app.engine('hbs', hbs.express4({ partials: 'views/partials' }))
@@ -94,6 +93,10 @@ const getRequestListener = letsencryptDir => {
         isDev: (environment === 'dev')
         , curTrack: currentTrack
       });
+    })
+
+    .get('/io-namespace', (req, res) => {
+      res.end(ioNamespace);
     })
 
     .post('/track', (req, res) => {
@@ -119,10 +122,8 @@ function stream(trackText) {
   currentTrack = trackText;
   client.stream(
     'statuses/filter'
-    , {
-      track: trackText
-    },
-    function(stream) {
+    , { track: trackText }
+    , function(stream) {
       curStream = stream;
       stream.on('data', aTweet => {
         if (!aTweet.user || !aTweet.text) {
@@ -168,7 +169,8 @@ function stream(trackText) {
       stream.on('end', () => {
         console.log('stream ended');
       });
-    });
+    }
+  );
 }
 
 function getPrepend() {

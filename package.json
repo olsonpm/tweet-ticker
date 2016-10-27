@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "build-release": "./build-release.sh",
-    "build-and-serve": "./build-release.sh && node release/index.pack.js",
-    "serve": "node release/index.pack.js"
+    "build-and-serve": "./build-release.sh && node serve"
+    , "build-release": "./build-release.sh"
+    , "serve": "node serve"
   },
   "repository": {
     "type": "git",

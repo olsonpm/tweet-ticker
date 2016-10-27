@@ -8,7 +8,6 @@
 
 
 const io = require('socket.io-client')
-  , socket = io()
   , TweenLite = require('TweenLite')
   , moment = require('moment')
   , $ = require('jquery')
@@ -38,19 +37,27 @@ const colors = [
   , newTrackTimeout = 200
   ;
 
-let ready = false;
+let dotTimer
+  , ready = false
+  , socket
+  ;
 
 
 //------//
 // Main //
 //------//
 
-$(() => {
+$(() => { $.get('io-namespace', initApp); });
+
+function initApp(namespace) {
+  socket = io(namespace);
+
   $('p.description').buddySystem();
 
   socket.on('twitter-update', function(theTweets) {
     if (!ready) return;
 
+    clearInterval(dotTimer);
     checkInitialThenDisplay(theTweets);
   });
   socket.on('track-change', changeTrack);
@@ -62,7 +69,7 @@ $(() => {
     );
   }
   $('#track').click(track);
-});
+}
 
 
 //-------------//
@@ -81,11 +88,25 @@ function changeTrack(newTrack) {
     , onComplete() {
       setTimeout(
         () => {
-          const initialExplanation = (oldTextToTrack === newTrack)
-            ? '<p class="initial explanation">Now tracking ' + $('#text-to-track').val() + '</p>'
-            : '<p class="initial explanation">Someone decided everyone should now track ' + $('#text-to-track').val() + '</p>';
+          const inner = (oldTextToTrack === newTrack)
+            ? 'Now tracking ' + $('#text-to-track').val()
+            : 'Someone decided everyone should now track ' + $('#text-to-track').val();
 
-          $('#tweets').html(initialExplanation);
+          // TODO cleanup 'initial' semantics
+          const explanation = '<p class="initial explanation">' + inner + '</p>';
+          let i = 0;
+
+          $('#tweets').html(explanation);
+          dotTimer = setInterval(
+            () => {
+              $('.initial.explanation')
+                .removeClass('wait' + ((i - 1) % 4))
+                .addClass('wait' + (i % 4));
+
+              i += 1;
+            }
+            , 1000
+          );
 
           TweenLite.to(
             $('#tweets')
@@ -150,9 +171,11 @@ function checkInitialThenDisplay(tweets) {
 function displayTweets(tweets) {
   var tweetHtml = "";
   tweets.forEach(function(e) {
-    const randomColor = colors[Math.floor(Math.random() * 6)];
+    const mcreated = moment(e.created, 'ddd MMM DD HH:mm:ss ZZ YYYY')
+      , randomColor = colors[Math.floor(Math.random() * 6)];
+
     tweetHtml += "<div class='initial tweet' style='border-top: 3px solid " + randomColor + "; "
-      + "border-bottom: 3px solid " + randomColor + ";'><h3>" + e.username + "</h3><p>" + e.text + "</p><div class='timestamp'>Curated " + moment(e.created).format('lll') + "</div></div>";
+      + "border-bottom: 3px solid " + randomColor + ";'><h3>" + e.username + "</h3><p>" + e.text + "</p><div class='timestamp'>Curated " + mcreated.format('lll') + "</div></div>";
   });
 
   const oldContent = $('#tweets').html()

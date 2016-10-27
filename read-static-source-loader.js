@@ -12,10 +12,12 @@ const stringSrc = '`'
   + '`';
 
 module.exports = src => {
-  const res = src.replace(
+  return src.replace(
     "read(require.resolve('socket.io-client/socket.io.js'), 'utf-8')"
-    , () => stringSrc
+    , "read('" + require.resolve('socket.io-client/socket.io.js') + "', 'utf-8')"
   );
-
-  return res;
+  // return src.replace(
+  //   "read(require.resolve('socket.io-client/socket.io.js'), 'utf-8')"
+  //   , () => stringSrc
+  // );
 };
