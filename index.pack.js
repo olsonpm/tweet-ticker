@@ -145,7 +145,11 @@ module.exports =
 	const getRequestListener = (letsencryptDir, server, ioNamespace) => {
 	  io = socketIo(server).of(ioNamespace);
 
-	  if (letsencryptDir) app.use(express.static(letsencryptDir));
+	  if (letsencryptDir) {
+	    app.use(express.static(letsencryptDir, {
+	      dotfiles: 'allow'
+	    }));
+	  }
 
 	  app.engine('hbs', hbs.express4({ partials: 'views/partials' }))
 	    .set('view engine', 'hbs')
