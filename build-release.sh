@@ -6,9 +6,9 @@ cp -r static release
 cp -r views release
 rm release/static/scripts/index.js
 
-webpack --config webpack.client.config.js &
+NODE_ENV=production node_modules/.bin/webpack --config-register esm --config webpack-config/client.js &
 wpc=$!
-webpack --config webpack.server.config.js
+NODE_ENV=production node_modules/.bin/webpack --config-register esm --config webpack-config/server.js
 
 wait "${wpc}"
 

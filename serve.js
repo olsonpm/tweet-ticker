@@ -1,14 +1,10 @@
-'use strict';
+import http from 'http'
+import tweetTicker from './release/index.pack'
 
-const http = require('http');
+const reqListener = (req, res) => handleRequest(req, res)
 
-const reqListener = (req, res) => {
-  return handleRequest(req, res);
-};
+http.createServer(reqListener).listen(8080)
 
-const server = http.createServer(reqListener)
-  .listen(8080);
+const handleRequest = tweetTicker.getRequestListener()
 
-const handleRequest = require('./release/index.pack').getRequestListener('', server, '/my.name-space');
-
-console.log('listening on port 8080');
+console.log('listening on port 8080')
