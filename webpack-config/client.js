@@ -3,7 +3,7 @@
 //---------//
 
 import path from 'path'
-import TerserPlugin from '../node_modules/terser-webpack-plugin'
+import TerserPlugin from 'terser-webpack-plugin'
 import webpack from 'webpack'
 
 //
