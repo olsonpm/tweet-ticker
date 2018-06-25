@@ -50,7 +50,7 @@
     "express-hbs": "^1.0.4",
     "ms": "^2.1.1",
     "perfect-tooltip": "^1.6.0",
-    "terser-webpack-plugin": "github:olsonpm/terser-webpack-plugin",
+    "terser-webpack-plugin": "github:olsonpm/terser-webpack-plugin#1.2.5",
     "webpack-cli": "^3.0.8",
     "webpack-node-externals": "^1.7.2",
     "ws": "^5.2.1"

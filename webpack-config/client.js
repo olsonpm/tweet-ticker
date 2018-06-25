@@ -3,7 +3,8 @@
 //---------//
 
 import path from 'path'
-import TerserPlugin from 'terser-webpack-plugin'
+import TerserPlugin from '../node_modules/terser-webpack-plugin'
+import webpack from 'webpack'
 
 //
 //------//
@@ -75,6 +76,11 @@ const config = {
       ),
     },
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+  ],
 }
 
 //

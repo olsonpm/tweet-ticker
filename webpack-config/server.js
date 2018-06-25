@@ -1,5 +1,6 @@
 import path from 'path'
 import webpackNodeExternals from 'webpack-node-externals'
+import webpack from 'webpack'
 
 const projectDirectory = path.resolve(__dirname, '..')
 
@@ -17,4 +18,9 @@ export default {
     libraryTarget: 'commonjs2',
   },
   node: { __dirname: true },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+  ],
 }

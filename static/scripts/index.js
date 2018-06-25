@@ -52,10 +52,6 @@ function initApp() {
   ws.onmessage = event => {
     const { id, data } = JSON.parse(event.data)
 
-    console.log('id: ' + id)
-    console.log('data')
-    console.log(data)
-
     idToHandleMessage[id](data)
   }
 
@@ -76,7 +72,6 @@ function getIdToHandleMessage() {
   return {
     trackChange: changeTrack,
     twitterUpdate: theTweets => {
-      console.log('ready: ' + ready)
       if (!ready) return
 
       clearInterval(dotTimer)
@@ -179,14 +174,11 @@ function displayTweets(tweets) {
         </div>
       </div>
     `)
-
-    console.log('tweetHtml: ' + tweetHtml)
   })
 
   const oldContent = $('#tweets').html(),
     curHeight = parseInt($('#tweets').css('height'), 10)
 
-  console.log('should be prepending to #tweets')
   $('#tweets').prepend(tweetHtml)
 
   const newHeight = parseInt($('#tweets').css('height'), 10),

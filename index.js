@@ -4,6 +4,7 @@
 
 import bodyParser from 'body-parser'
 import compression from 'compression'
+import fs from 'fs'
 import express from 'express'
 import hbs from 'express-hbs'
 import http from 'http'
@@ -21,7 +22,19 @@ import checkCertAndKeyDaily from './check-cert-and-key-daily'
 //------//
 
 const app = express(),
-  { isHttps, pathToCertAndKey, twitterConfig, websocket } = appConfig
+  {
+    isHttps,
+    pathToCertAndKey,
+    twitterConfig,
+    websocket,
+    //
+    // At some point I need to give up webpack.  It's caused way too much hair
+    //   loss.  This time it has to do with __dirname substitution not being
+    //   implemented sanely.  For whatever reason it's always a huge pain in the
+    //   ass just to get __dirname to work like you think it should
+    //
+    projectDirectory,
+  } = appConfig
 
 const client = new Twitter(twitterConfig),
   environment = getEnvironment(),
@@ -76,10 +89,10 @@ const getRequestListener = maybeLetsencryptDir => {
   app
     .engine('hbs', hbs.express4({ partials: 'views/partials' }))
     .set('view engine', 'hbs')
-    .set('views', path.resolve(__dirname, 'views'))
+    .set('views', path.resolve(projectDirectory, 'views'))
 
     .use(compression())
-    .use(express.static(path.resolve(__dirname, staticDirectory)))
+    .use(express.static(path.resolve(projectDirectory, staticDirectory)))
     .use(
       bodyParser.urlencoded({
         extended: true,
@@ -187,7 +200,14 @@ function getEnvironment() {
 function createServerForWebsocket() {
   return isDevelopment
     ? http.createServer()
-    : https.createServer(pathToCertAndKey)
+    : https.createServer(getCertAndKey(pathToCertAndKey))
+}
+
+function getCertAndKey({ pathToCert, pathToKey }) {
+  return {
+    cert: fs.readFileSync(pathToCert),
+    key: fs.readFileSync(pathToKey),
+  }
 }
 
 //
