@@ -7,7 +7,6 @@
 //---------//
 
 import $ from 'jquery'
-import appConfig from '../../app-config'
 import dedent from 'dedent'
 import initBuddySystem from 'buddy-system'
 import moment from 'moment'
@@ -29,8 +28,7 @@ const colors = ['#7EFF9D', '#333', '#A6C2FF', '#6C4F8B', '#FFFBAB', '#B24343'],
   initialReadyTimeout = 6000,
   myEase = Power3.easeOut,
   newTrackTimeout = 200,
-  readyTimeout = 3000,
-  { websocket } = appConfig
+  readyTimeout = 3000
 
 let dotTimer,
   ready = false
@@ -47,7 +45,8 @@ $(() => {
 function initApp() {
   $('p.description').buddySystem()
 
-  const ws = new WebSocket(websocket.url)
+  const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:',
+    ws = new WebSocket(wsProtocol + '//' + window.location.host)
 
   ws.onmessage = event => {
     const { id, data } = JSON.parse(event.data)

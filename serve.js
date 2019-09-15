@@ -1,10 +1,11 @@
 import http from 'http'
 import tweetTicker from './release/index.pack'
 
-const reqListener = (req, res) => handleRequest(req, res)
+const reqListener = (req, res) => handleRequest(req, res),
+  server = http.createServer(reqListener)
 
-http.createServer(reqListener).listen(8080)
+server.listen(8080)
 
-const handleRequest = tweetTicker.getRequestListener()
+const handleRequest = tweetTicker.getRequestListener('', server)
 
 console.log('listening on port 8080')

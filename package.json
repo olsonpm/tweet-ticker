@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "build-and-serve": "./build-release.sh && node serve",
+    "build-and-serve": "./build-release.sh && node -r esm serve",
     "build-release": "./build-release.sh",
-    "serve": "node serve"
+    "serve": "node -r esm serve"
   },
   "repository": {
     "type": "git",
@@ -35,9 +35,6 @@
     "prettier": "^1.13.5",
     "twitter": "^1.7.1",
     "webpack": "^4.12.1"
-  },
-  "engines": {
-    "node": "0.10.x"
   },
   "dependencies": {
     "@babel/cli": "^7.0.0-beta.51",

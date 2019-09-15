@@ -17,7 +17,7 @@ export default {
     pathinfo: true,
     libraryTarget: 'commonjs2',
   },
-  node: { __dirname: true },
+  node: { __dirname: false },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

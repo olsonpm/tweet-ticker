@@ -4,17 +4,13 @@
 
 import bodyParser from 'body-parser'
 import compression from 'compression'
-import fs from 'fs'
 import express from 'express'
 import hbs from 'express-hbs'
-import http from 'http'
-import https from 'https'
 import path from 'path'
 import Twitter from 'twitter'
 import ws from 'ws'
 
 import appConfig from './app-config'
-import checkCertAndKeyDaily from './check-cert-and-key-daily'
 
 //
 //------//
@@ -22,21 +18,7 @@ import checkCertAndKeyDaily from './check-cert-and-key-daily'
 //------//
 
 const app = express(),
-  {
-    isHttps,
-    pathToCertAndKey,
-    twitterConfig,
-    websocket,
-    //
-    // At some point I need to give up webpack.  It's caused way too much hair
-    //   loss.  This time it has to do with __dirname substitution not being
-    //   implemented sanely.  For whatever reason it's always a huge pain in the
-    //   ass just to get __dirname to work like you think it should
-    //
-    projectDirectory,
-  } = appConfig
-
-const client = new Twitter(twitterConfig),
+  client = new Twitter(appConfig.twitterConfig),
   environment = getEnvironment(),
   isDevelopment = environment === 'dev',
   maxTweetsSent = 2,
@@ -60,9 +42,8 @@ if (['dev', 'test', 'prod'].indexOf(environment) === -1) {
 // Main //
 //------//
 
-const getRequestListener = maybeLetsencryptDir => {
-  const serverForWebsocket = createServerForWebsocket(),
-    websocketServer = new ws.Server({ server: serverForWebsocket })
+const getRequestListener = (maybeLetsencryptDir, server) => {
+  const websocketServer = new ws.Server({ server })
 
   websocketServer.broadcast = data => {
     const sendData = aClient => {
@@ -71,10 +52,6 @@ const getRequestListener = maybeLetsencryptDir => {
 
     passThrough(websocketServer.clients, [keepWhen(isOpen), forEach(sendData)])
   }
-
-  serverForWebsocket.listen(websocket.port)
-
-  if (isHttps) checkCertAndKeyDaily(serverForWebsocket, pathToCertAndKey)
 
   const stream = createStream(websocketServer)
 
@@ -89,10 +66,10 @@ const getRequestListener = maybeLetsencryptDir => {
   app
     .engine('hbs', hbs.express4({ partials: 'views/partials' }))
     .set('view engine', 'hbs')
-    .set('views', path.resolve(projectDirectory, 'views'))
+    .set('views', path.resolve(__dirname, 'views'))
 
     .use(compression())
-    .use(express.static(path.resolve(projectDirectory, staticDirectory)))
+    .use(express.static(path.resolve(__dirname, staticDirectory)))
     .use(
       bodyParser.urlencoded({
         extended: true,
@@ -195,19 +172,6 @@ function getEnvironment() {
     test: 'test',
     production: 'prod',
   }[process.env.NODE_ENV || 'production']
-}
-
-function createServerForWebsocket() {
-  return isDevelopment
-    ? http.createServer()
-    : https.createServer(getCertAndKey(pathToCertAndKey))
-}
-
-function getCertAndKey({ pathToCert, pathToKey }) {
-  return {
-    cert: fs.readFileSync(pathToCert),
-    key: fs.readFileSync(pathToKey),
-  }
 }
 
 //
