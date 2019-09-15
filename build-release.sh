@@ -4,6 +4,7 @@ rm -rf release
 mkdir release
 cp -r static release
 cp -r views release
+cp package.json package-lock.json release
 rm release/static/scripts/index.js
 
 NODE_ENV=production node_modules/.bin/webpack --config-register esm --config webpack-config/client.js &
