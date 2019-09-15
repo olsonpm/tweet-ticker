@@ -1,50 +1,47 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>Track what you will</title>
-		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Bitter:400,700">
+  <head>
+    <meta charset="UTF-8">
+    <title>Track what you will</title>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Bitter:400,700">
 
-		{{#if isDev}}
-		<link rel="stylesheet" type="text/css" href="/css/styles.css">
-		{{else}}
-		<link rel="stylesheet" type="text/css" href="/css/styles.min.css">
-		{{/if}}
-	</head>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  </head>
 
-	<body class="jumbotron">
+  <body class="jumbotron">
 
-		<img id="ribbon" src="/img/header.png" alt="Twitter Feed Tester"></img>
+    <img id="ribbon" src="/img/header.png" alt="Twitter Feed Tester"></img>
 
-		<div id="content">
-			<form>
-				<label>
-					You can track whatever you liiiike:
-					{{#if curTrack}}
-					<input id="text-to-track" type="text" value="{{curTrack}}" maxlength="10">
-					{{else}}
-					<input id="text-to-track" type="text" value="nasa" maxlength="10">
-					{{/if}}
-				</label>
-				<input id="track" type="submit" value="Track">
-				<p class="description">
-					Note: This website only tracks one subject at a time.  Meaning if you choose to track turtles, now everyone visiting this
-					website gets to see all twitter turtle goodness.  Don't worry though, it's fun that way.
-				</p>
-			</form>
-			<div id="tweets">
-				<p class="initial explanation">
-					{{#if curTrack}}
-					Currently tracking {{curTrack}}
-					{{else}}
-					Not tracking anything
-					{{/if}}
-				</p>
-			</div>
-		</div>
+    <div id="content">
+      <form>
+        <label>
+          You can track whatever you liiiike:
+          {{#if curTrack}}
+          <input id="text-to-track" type="text" value="{{curTrack}}" maxlength="10">
+          {{else}}
+          <input id="text-to-track" type="text" value="nasa" maxlength="10">
+          {{/if}}
+        </label>
+        <input id="track" type="submit" value="Track">
+        <p class="description">
+          Note: This website only tracks one subject at a time.  Meaning if you choose to track turtles, now everyone visiting this
+          website gets to see all twitter turtle goodness.  Don't worry though, it's fun that way.
+        </p>
+      </form>
+      <div id="tweets">
+        <p class="initial explanation">
+          {{#if curTrack}}
+          Currently tracking {{curTrack}}
+          {{else}}
+          Not tracking anything
+          {{/if}}
+        </p>
+      </div>
+    </div>
 
-		<div id="curtrack" data-curtrack="{{curTrack}}"></div>
-		<script src="/scripts/index.pack.min.js"></script>
-	</body>
+    <div id="curtrack" data-curtrack="{{curTrack}}"></div>
+
+    <script src="/scripts/index.pack.min.js"></script>
+  </body>
 
 </html>
