@@ -1,0 +1,67 @@
+{
+  "name": "tweet-ticker",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "build-and-serve": "./build-release.sh && node -r esm serve",
+    "build-release": "./build-release.sh",
+    "serve": "node -r esm serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/olsonpm/tweet-ticker.git"
+  },
+  "author": "phil olson",
+  "license": "SEE LICENSE IN license.txt",
+  "bugs": {
+    "url": "https://github.com/olsonpm/tweet-ticker/issues"
+  },
+  "homepage": "https://github.com/olsonpm/tweet-ticker",
+  "devDependencies": {
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.2",
+    "express": "^4.16.3",
+    "express-hbs": "^1.0.4",
+    "terser-webpack-plugin": "^2.0.1",
+    "twitter": "^1.7.1",
+    "ws": "^5.2.1"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.0.0-beta.51",
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "babel-loader": "^8.0.0-beta.4",
+    "bootstrap": "^4.1.1",
+    "buddy-system": "^1.0.2",
+    "date-fns": "^1.29.0",
+    "dedent": "^0.7.0",
+    "eslint-config-personal": "github:olsonpm/eslint-config-personal",
+    "eslint": "^5.0.0",
+    "esm": "^3.0.54",
+    "gsap": "^1.19.0",
+    "jquery": "^2.2.4",
+    "json-loader": "^0.5.7",
+    "lodash": "^4.17.10",
+    "minimist": "^1.2.0",
+    "moment": "^2.22.2",
+    "ms": "^2.1.1",
+    "perfect-tooltip": "^1.6.0",
+    "prettier": "^1.13.5",
+    "webpack-cli": "^3.0.8",
+    "webpack-node-externals": "^1.7.2",
+    "webpack": "^4.12.1"
+  },
+  "browser": {
+    "TweenLite": "./node_modules/gsap/src/uncompressed/TweenLite.js",
+    "gsapCssPlugin": "./node_modules/gsap/src/uncompressed/plugins/CSSPlugin.js",
+    "perfect-tooltip": "./node_modules/perfect-tooltip/js/jquery.tooltip.js"
+  },
+  "eslintConfig": {
+    "extends": "personal"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "semi": false
+  }
+}
